@@ -3,7 +3,7 @@ name: Build and Deploy Frontend
 # Controls when the workflow will run
 on:
   push:
-    branches: [ master ] # Trigger on pushes to the main branch
+    branches: [ main ] # Trigger on pushes to the main branch
     tags:
       - 'v*'
   workflow_dispatch:
@@ -66,8 +66,8 @@ jobs:
             type=ref,event=tag
             # Commit SHA (always useful)
             type=sha
-            # 'latest' tag ONLY for pushes to the master branch
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
+            # 'latest' tag ONLY for pushes to the main branch
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -87,7 +87,7 @@ jobs:
 
   trigger-dokploy-deploy:
     name: Trigger Dokploy Redeployment
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     needs: build-and-push-images # Depend on the updated job name
     runs-on: ubuntu-latest
 
